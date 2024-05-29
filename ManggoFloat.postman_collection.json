@@ -524,9 +524,12 @@
 			"response": []
 		},
 		{
-			"name": "GET ID",
+			"name": "GET DATA BY ID PENGGUNA",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "formdata",
@@ -553,7 +556,23 @@
 						}
 					]
 				},
-				"url": "http://localhost/backend-manggofloat/PembelianAPI.php"
+				"url": {
+					"raw": "http://localhost/backend-manggofloat/PembelianAPI.php?id_pengguna=4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"backend-manggofloat",
+						"PembelianAPI.php"
+					],
+					"query": [
+						{
+							"key": "id_pengguna",
+							"value": "4"
+						}
+					]
+				}
 			},
 			"response": []
 		}
