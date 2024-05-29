@@ -12,20 +12,18 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        if (isset($_GET['id'])) {
-            $id = intval($_GET['id']);
+        if (isset($_SESSION['admin_id'])) {
+            $id = $_SESSION['admin_id'];
             $sql = "SELECT * FROM tbl_admin WHERE id_admin = $id";
             $result = $conn->query($sql);
-            $row = $result->fetch_assoc();
-            echo json_encode($row);
-        } else {
-            $sql = "SELECT * FROM tbl_admin";
-            $result = $conn->query($sql);
-            $rows = array();
-            while ($row = $result->fetch_assoc()) {
-                $rows[] = $row;
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                echo json_encode($row);
+            } else {
+                echo json_encode(array('status' => 'error', 'message' => 'User not found'));
             }
-            echo json_encode($rows);
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Not logged in'));
         }
         break;
 

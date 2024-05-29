@@ -6,7 +6,26 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 require 'conn.php';
 
+session_start();
+
 $method = $_SERVER['REQUEST_METHOD'];
+
+function handleFormData() {
+    $data = array();
+    parse_str(file_get_contents('php://input'), $data);
+    foreach ($_POST as $key => $value) {
+        $data[$key] = $value;
+    }
+    foreach ($_FILES as $key => $file) {
+        if ($file['error'] == UPLOAD_ERR_OK) {
+            $target_dir = "uploads/";
+            $target_file = $target_dir . basename($file["name"]);
+            move_uploaded_file($file["tmp_name"], $target_file);
+            $data[$key] = $target_file;
+        }
+    }
+    return $data;
+}
 
 switch ($method) {
     case 'GET':
@@ -28,16 +47,14 @@ switch ($method) {
         break;
 
     case 'POST':
-        if (isset($_FILES['gambar_produk'])) {
-            $target_dir = "uploads/";
-            $target_file = $target_dir . basename($_FILES["gambar_produk"]["name"]);
-            move_uploaded_file($_FILES["gambar_produk"]["tmp_name"], $target_file);
-
-            $nama_produk = $_POST['nama_produk'];
-            $gambar_produk = $target_file;
-            $harga_produk = $_POST['harga_produk'];
-            $deskripsi_produk = $_POST['deskripsi_produk'];
-            $stok_produk = $_POST['stok_produk'];
+        $data = handleFormData();
+        
+        if (isset($data['nama_produk'], $data['gambar_produk'], $data['harga_produk'], $data['deskripsi_produk'], $data['stok_produk'])) {
+            $nama_produk = $data['nama_produk'];
+            $gambar_produk = $data['gambar_produk'];
+            $harga_produk = $data['harga_produk'];
+            $deskripsi_produk = $data['deskripsi_produk'];
+            $stok_produk = $data['stok_produk'];
 
             $sql = "INSERT INTO tbl_produk (nama_produk, gambar_produk, harga_produk, deskripsi_produk, stok_produk) VALUES ('$nama_produk', '$gambar_produk', '$harga_produk', '$deskripsi_produk', '$stok_produk')";
 
@@ -46,27 +63,39 @@ switch ($method) {
             } else {
                 $response = array('status' => 'error', 'message' => $conn->error);
             }
-            echo json_encode($response);
+        } else {
+            $response = array('status' => 'error', 'message' => 'Incomplete data');
         }
+
+        echo json_encode($response);
         break;
 
     case 'PUT':
-        parse_str(file_get_contents("php://input"), $data);
+        $data = handleFormData();
+        
+        if (isset($data['id_produk'], $data['nama_produk'], $data['harga_produk'], $data['deskripsi_produk'], $data['stok_produk'])) {
+            $id_produk = $data['id_produk'];
+            $nama_produk = $data['nama_produk'];
+            $harga_produk = $data['harga_produk'];
+            $deskripsi_produk = $data['deskripsi_produk'];
+            $stok_produk = $data['stok_produk'];
+            $gambar_produk = isset($data['gambar_produk']) ? $data['gambar_produk'] : null;
 
-        $id_produk = $data['id_produk'];
-        $nama_produk = $data['nama_produk'];
-        $gambar_produk = $data['gambar_produk'];
-        $harga_produk = $data['harga_produk'];
-        $deskripsi_produk = $data['deskripsi_produk'];
-        $stok_produk = $data['stok_produk'];
+            $sql = "UPDATE tbl_produk SET nama_produk='$nama_produk', harga_produk='$harga_produk', deskripsi_produk='$deskripsi_produk', stok_produk='$stok_produk'";
+            if ($gambar_produk) {
+                $sql .= ", gambar_produk='$gambar_produk'";
+            }
+            $sql .= " WHERE id_produk=$id_produk";
 
-        $sql = "UPDATE tbl_produk SET nama_produk='$nama_produk', gambar_produk='$gambar_produk', harga_produk='$harga_produk', deskripsi_produk='$deskripsi_produk', stok_produk='$stok_produk' WHERE id_produk=$id_produk";
-
-        if ($conn->query($sql) === TRUE) {
-            $response = array('status' => 'success');
+            if ($conn->query($sql) === TRUE) {
+                $response = array('status' => 'success');
+            } else {
+                $response = array('status' => 'error', 'message' => $conn->error);
+            }
         } else {
-            $response = array('status' => 'error', 'message' => $conn->error);
+            $response = array('status' => 'error', 'message' => 'Incomplete data');
         }
+
         echo json_encode($response);
         break;
 
