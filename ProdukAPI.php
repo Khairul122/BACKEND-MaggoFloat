@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-require 'db.php';
+require 'conn.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -34,13 +34,12 @@ switch ($method) {
             move_uploaded_file($_FILES["gambar_produk"]["tmp_name"], $target_file);
 
             $nama_produk = $_POST['nama_produk'];
-            $merk_produk = $_POST['merk_produk'];
             $gambar_produk = $target_file;
             $harga_produk = $_POST['harga_produk'];
             $deskripsi_produk = $_POST['deskripsi_produk'];
             $stok_produk = $_POST['stok_produk'];
 
-            $sql = "INSERT INTO tbl_produk (nama_produk, merk_produk, gambar_produk, harga_produk, deskripsi_produk, stok_produk) VALUES ('$nama_produk', '$merk_produk', '$gambar_produk', '$harga_produk', '$deskripsi_produk', '$stok_produk')";
+            $sql = "INSERT INTO tbl_produk (nama_produk, gambar_produk, harga_produk, deskripsi_produk, stok_produk) VALUES ('$nama_produk', '$gambar_produk', '$harga_produk', '$deskripsi_produk', '$stok_produk')";
 
             if ($conn->query($sql) === TRUE) {
                 $response = array('status' => 'success', 'id_produk' => $conn->insert_id);
@@ -56,13 +55,12 @@ switch ($method) {
 
         $id_produk = $data['id_produk'];
         $nama_produk = $data['nama_produk'];
-        $merk_produk = $data['merk_produk'];
         $gambar_produk = $data['gambar_produk'];
         $harga_produk = $data['harga_produk'];
         $deskripsi_produk = $data['deskripsi_produk'];
         $stok_produk = $data['stok_produk'];
 
-        $sql = "UPDATE tbl_produk SET nama_produk='$nama_produk', merk_produk='$merk_produk', gambar_produk='$gambar_produk', harga_produk='$harga_produk', deskripsi_produk='$deskripsi_produk', stok_produk='$stok_produk' WHERE id_produk=$id_produk";
+        $sql = "UPDATE tbl_produk SET nama_produk='$nama_produk', gambar_produk='$gambar_produk', harga_produk='$harga_produk', deskripsi_produk='$deskripsi_produk', stok_produk='$stok_produk' WHERE id_produk=$id_produk";
 
         if ($conn->query($sql) === TRUE) {
             $response = array('status' => 'success');
