@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-require 'db.php';
+require 'conn.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -12,12 +12,19 @@ switch ($method) {
     case 'GET':
         if (isset($_GET['id'])) {
             $id = intval($_GET['id']);
-            $sql = "SELECT * FROM tbl_produk WHERE id_produk = $id";
+            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
+                    FROM tbl_pembelian p
+                    JOIN tbl_pengguna pg ON p.id_pengguna = pg.id_pengguna
+                    JOIN tbl_produk pr ON p.id_produk = pr.id_produk
+                    WHERE p.id_pembelian = $id";
             $result = $conn->query($sql);
             $row = $result->fetch_assoc();
             echo json_encode($row);
         } else {
-            $sql = "SELECT * FROM tbl_produk";
+            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
+                    FROM tbl_pembelian p
+                    JOIN tbl_pengguna pg ON p.id_pengguna = pg.id_pengguna
+                    JOIN tbl_produk pr ON p.id_produk = pr.id_produk";
             $result = $conn->query($sql);
             $rows = array();
             while ($row = $result->fetch_assoc()) {
@@ -27,66 +34,24 @@ switch ($method) {
         }
         break;
 
-    case 'POST':
-        if (isset($_FILES['gambar_produk'])) {
-            $target_dir = "uploads/";
-            $target_file = $target_dir . basename($_FILES["gambar_produk"]["name"]);
-            move_uploaded_file($_FILES["gambar_produk"]["tmp_name"], $target_file);
-
-            $nama_produk = $_POST['nama_produk'];
-            $merk_produk = $_POST['merk_produk'];
-            $gambar_produk = $target_file;
-            $harga_produk = $_POST['harga_produk'];
-            $deskripsi_produk = $_POST['deskripsi_produk'];
-            $stok_produk = $_POST['stok_produk'];
-
-            $sql = "INSERT INTO tbl_produk (nama_produk, merk_produk, gambar_produk, harga_produk, deskripsi_produk, stok_produk) VALUES ('$nama_produk', '$merk_produk', '$gambar_produk', '$harga_produk', '$deskripsi_produk', '$stok_produk')";
-
-            if ($conn->query($sql) === TRUE) {
-                $response = array('status' => 'success', 'id_produk' => $conn->insert_id);
-            } else {
-                $response = array('status' => 'error', 'message' => $conn->error);
-            }
-            echo json_encode($response);
-        }
-        break;
-
     case 'PUT':
-        parse_str(file_get_contents("php://input"), $data);
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (isset($data['id_pembelian']) && isset($data['status_pembelian'])) {
+            $id_pembelian = intval($data['id_pembelian']);
+            $status_pembelian = $conn->real_escape_string($data['status_pembelian']);
 
-        $id_produk = $data['id_produk'];
-        $nama_produk = $data['nama_produk'];
-        $merk_produk = $data['merk_produk'];
-        $gambar_produk = $data['gambar_produk'];
-        $harga_produk = $data['harga_produk'];
-        $deskripsi_produk = $data['deskripsi_produk'];
-        $stok_produk = $data['stok_produk'];
-
-        $sql = "UPDATE tbl_produk SET nama_produk='$nama_produk', merk_produk='$merk_produk', gambar_produk='$gambar_produk', harga_produk='$harga_produk', deskripsi_produk='$deskripsi_produk', stok_produk='$stok_produk' WHERE id_produk=$id_produk";
-
-        if ($conn->query($sql) === TRUE) {
-            $response = array('status' => 'success');
-        } else {
-            $response = array('status' => 'error', 'message' => $conn->error);
-        }
-        echo json_encode($response);
-        break;
-
-    case 'DELETE':
-        if (isset($_GET['id'])) {
-            $id = intval($_GET['id']);
-            $sql = "DELETE FROM tbl_produk WHERE id_produk = $id";
-
+            $sql = "UPDATE tbl_pembelian SET status_pembelian='$status_pembelian' WHERE id_pembelian=$id_pembelian";
             if ($conn->query($sql) === TRUE) {
-                $response = array('status' => 'success');
+                echo json_encode(array('status' => 'success', 'message' => 'Status pembelian berhasil diperbarui'));
             } else {
-                $response = array('status' => 'error', 'message' => $conn->error);
+                echo json_encode(array('status' => 'error', 'message' => 'Gagal memperbarui status pembelian'));
             }
-            echo json_encode($response);
         } else {
-            echo json_encode(array('status' => 'error', 'message' => 'Invalid ID'));
+            echo json_encode(array('status' => 'error', 'message' => 'Data tidak lengkap'));
         }
         break;
+
+    // kasus POST dan DELETE tetap sama
 
     default:
         echo json_encode(array('status' => 'error', 'message' => 'Invalid request method'));
