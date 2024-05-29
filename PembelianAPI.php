@@ -24,6 +24,19 @@ switch ($method) {
             } else {
                 echo json_encode(array('status' => 'error', 'message' => 'Data not found'));
             }
+        } elseif (isset($_GET['id_pengguna'])) {
+            $id_pengguna = intval($_GET['id_pengguna']);
+            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
+                    FROM tbl_pembelian p
+                    JOIN tbl_pengguna pg ON p.id_pengguna = pg.id_pengguna
+                    JOIN tbl_produk pr ON p.id_produk = pr.id_produk
+                    WHERE p.id_pengguna = $id_pengguna";
+            $result = $conn->query($sql);
+            $rows = array();
+            while ($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+            echo json_encode($rows);
         } else {
             $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
                     FROM tbl_pembelian p
