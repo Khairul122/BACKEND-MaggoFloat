@@ -11,8 +11,11 @@ session_start();
 $method = $_SERVER['REQUEST_METHOD'];
 
 function handleFormData() {
-    $data = array();
-    parse_str(file_get_contents('php://input'), $data);
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (is_null($data)) {
+        $data = array();
+        parse_str(file_get_contents('php://input'), $data);
+    }
     foreach ($_POST as $key => $value) {
         $data[$key] = $value;
     }

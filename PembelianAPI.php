@@ -18,8 +18,12 @@ switch ($method) {
                     JOIN tbl_produk pr ON p.id_produk = pr.id_produk
                     WHERE p.id_pembelian = $id";
             $result = $conn->query($sql);
-            $row = $result->fetch_assoc();
-            echo json_encode($row);
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                echo json_encode($row);
+            } else {
+                echo json_encode(array('status' => 'error', 'message' => 'Data not found'));
+            }
         } else {
             $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
                     FROM tbl_pembelian p
@@ -31,6 +35,24 @@ switch ($method) {
                 $rows[] = $row;
             }
             echo json_encode($rows);
+        }
+        break;
+
+    case 'POST':
+        $id_pengguna = $_POST['id_pengguna'];
+        $id_produk = $_POST['id_produk'];
+        $jumlah = $_POST['jumlah'];
+        $total_harga = $_POST['total_harga'];
+        $tanggal_pembelian = $_POST['tanggal_pembelian'];
+        $status_pembelian = $_POST['status_pembelian'];
+
+        $sql = "INSERT INTO tbl_pembelian (id_pengguna, id_produk, jumlah, total_harga, tanggal_pembelian, status_pembelian) 
+                VALUES ('$id_pengguna', '$id_produk', '$jumlah', '$total_harga', '$tanggal_pembelian', '$status_pembelian')";
+
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(array('status' => 'success', 'message' => 'Data pembelian berhasil ditambahkan'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Gagal menambahkan data pembelian'));
         }
         break;
 
@@ -51,7 +73,19 @@ switch ($method) {
         }
         break;
 
-    // kasus POST dan DELETE tetap sama
+    case 'DELETE':
+        if (isset($_GET['id'])) {
+            $id = intval($_GET['id']);
+            $sql = "DELETE FROM tbl_pembelian WHERE id_pembelian = $id";
+            if ($conn->query($sql) === TRUE) {
+                echo json_encode(array('status' => 'success', 'message' => 'Data pembelian berhasil dihapus'));
+            } else {
+                echo json_encode(array('status' => 'error', 'message' => 'Gagal menghapus data pembelian'));
+            }
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'ID tidak valid'));
+        }
+        break;
 
     default:
         echo json_encode(array('status' => 'error', 'message' => 'Invalid request method'));
