@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 30 Bulan Mei 2024 pada 01.16
+-- Waktu pembuatan: 02 Jun 2024 pada 10.18
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.4.10
 
@@ -62,7 +62,16 @@ CREATE TABLE `tbl_pembelian` (
 --
 
 INSERT INTO `tbl_pembelian` (`id_pembelian`, `id_produk`, `id_pengguna`, `jumlah`, `total_harga`, `status_pembelian`, `tanggal_pembelian`) VALUES
-(3, 10, 4, 2, 20000, 'Selesai', '2024-05-29 17:00:00');
+(3, 10, 4, 2, 20000, 'Selesai', '2024-05-29 17:00:00'),
+(4, 10, 4, 2, 20000, 'Dipesan', '2024-05-29 17:00:00'),
+(5, 10, 4, 2, 20000, 'Dipesan', '2024-05-29 17:00:00'),
+(11, 10, 9, 3, 30000, 'Diproses', '2024-05-30 17:00:00'),
+(12, 10, 9, 2, 20000, 'Diproses', '2024-05-30 17:00:00'),
+(13, 10, 9, 2, 20000, 'Diproses', '2024-05-30 17:00:00'),
+(14, 10, 9, 1, 10000, 'Selesai', '2024-05-30 17:00:00'),
+(15, 11, 9, 1, 10000, 'Diproses', '2024-05-30 17:00:00'),
+(16, 11, 9, 1, 10000, 'Diproses', '2024-05-30 17:00:00'),
+(17, 11, 9, 5, 50000, 'Diproses', '2024-05-30 17:00:00');
 
 -- --------------------------------------------------------
 
@@ -84,7 +93,9 @@ CREATE TABLE `tbl_pengguna` (
 --
 
 INSERT INTO `tbl_pengguna` (`id_pengguna`, `nama_pengguna`, `email`, `password`, `alamat`, `no_telepon`) VALUES
-(4, 'sari1', 'sari@gmail.com', '$2y$10$Fqd0jt2NY.ypweygb7PJp..IYQLLqJYszDa79lmdvRQpKtUbnNvFK', 'Batuphat', '1234567890');
+(4, 'sari1', 'sari@gmail.com', '$2y$10$Fqd0jt2NY.ypweygb7PJp..IYQLLqJYszDa79lmdvRQpKtUbnNvFK', 'Batuphat', '1234567890'),
+(8, 'sari', 'sari1@gmail.com', '$2y$10$Ng/AzwgSRBGHCbC6vfxIKOH2QK.QouaavWi1k1ZaiWK3MB6dR4unO', 'Cunda', '082164331277'),
+(9, 'budi', 'budiman1@gmail.com', '$2y$10$VQBcHfrkHZZwJUXUQNoqf.elOv2t7A86C6GLy7iI.6H7tABVVe0li', 'Simpang Len', '082165443677');
 
 -- --------------------------------------------------------
 
@@ -155,13 +166,13 @@ ALTER TABLE `tbl_admin`
 -- AUTO_INCREMENT untuk tabel `tbl_pembelian`
 --
 ALTER TABLE `tbl_pembelian`
-  MODIFY `id_pembelian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pembelian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_pengguna`
 --
 ALTER TABLE `tbl_pengguna`
-  MODIFY `id_pengguna` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_pengguna` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_produk`

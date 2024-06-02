@@ -12,7 +12,7 @@ switch ($method) {
     case 'GET':
         if (isset($_GET['id'])) {
             $id = intval($_GET['id']);
-            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, pr.gambar_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
+            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, pr.gambar_produk, pr.harga_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
                     FROM tbl_pembelian p
                     JOIN tbl_pengguna pg ON p.id_pengguna = pg.id_pengguna
                     JOIN tbl_produk pr ON p.id_produk = pr.id_produk
@@ -26,7 +26,7 @@ switch ($method) {
             }
         } elseif (isset($_GET['id_pengguna'])) {
             $id_pengguna = intval($_GET['id_pengguna']);
-            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, pr.gambar_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
+            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, pr.gambar_produk, pr.harga_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
                     FROM tbl_pembelian p
                     JOIN tbl_pengguna pg ON p.id_pengguna = pg.id_pengguna
                     JOIN tbl_produk pr ON p.id_produk = pr.id_produk
@@ -38,7 +38,7 @@ switch ($method) {
             }
             echo json_encode($rows);
         } else {
-            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, pr.gambar_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
+            $sql = "SELECT p.id_pembelian, pg.nama_pengguna, pr.nama_produk, pr.gambar_produk, pr.harga_produk, p.jumlah, p.total_harga, p.tanggal_pembelian, p.status_pembelian
                     FROM tbl_pembelian p
                     JOIN tbl_pengguna pg ON p.id_pengguna = pg.id_pengguna
                     JOIN tbl_produk pr ON p.id_produk = pr.id_produk";
