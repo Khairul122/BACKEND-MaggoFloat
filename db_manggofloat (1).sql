@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 02 Jun 2024 pada 10.18
+-- Waktu pembuatan: 09 Jun 2024 pada 09.57
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.4.10
 
@@ -49,11 +49,13 @@ INSERT INTO `tbl_admin` (`id_admin`, `username`, `email`, `password`) VALUES
 
 CREATE TABLE `tbl_pembelian` (
   `id_pembelian` int(11) NOT NULL,
+  `kode_transaksi` varchar(10) NOT NULL,
   `id_produk` int(11) NOT NULL,
   `id_pengguna` int(11) NOT NULL,
   `jumlah` int(11) NOT NULL,
   `total_harga` int(10) NOT NULL,
   `status_pembelian` varchar(50) DEFAULT 'Diproses',
+  `status_pembayaran` varchar(20) NOT NULL,
   `tanggal_pembelian` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -61,17 +63,9 @@ CREATE TABLE `tbl_pembelian` (
 -- Dumping data untuk tabel `tbl_pembelian`
 --
 
-INSERT INTO `tbl_pembelian` (`id_pembelian`, `id_produk`, `id_pengguna`, `jumlah`, `total_harga`, `status_pembelian`, `tanggal_pembelian`) VALUES
-(3, 10, 4, 2, 20000, 'Selesai', '2024-05-29 17:00:00'),
-(4, 10, 4, 2, 20000, 'Dipesan', '2024-05-29 17:00:00'),
-(5, 10, 4, 2, 20000, 'Dipesan', '2024-05-29 17:00:00'),
-(11, 10, 9, 3, 30000, 'Diproses', '2024-05-30 17:00:00'),
-(12, 10, 9, 2, 20000, 'Diproses', '2024-05-30 17:00:00'),
-(13, 10, 9, 2, 20000, 'Diproses', '2024-05-30 17:00:00'),
-(14, 10, 9, 1, 10000, 'Selesai', '2024-05-30 17:00:00'),
-(15, 11, 9, 1, 10000, 'Diproses', '2024-05-30 17:00:00'),
-(16, 11, 9, 1, 10000, 'Diproses', '2024-05-30 17:00:00'),
-(17, 11, 9, 5, 50000, 'Diproses', '2024-05-30 17:00:00');
+INSERT INTO `tbl_pembelian` (`id_pembelian`, `kode_transaksi`, `id_produk`, `id_pengguna`, `jumlah`, `total_harga`, `status_pembelian`, `status_pembayaran`, `tanggal_pembelian`) VALUES
+(65, 'PJ001', 10, 9, 10, 169000, 'Diterima', 'COD', '2024-06-04 17:00:00'),
+(66, 'PJ002', 10, 10, 1, 20000, 'Ditolak', 'DANA', '2024-06-08 17:00:00');
 
 -- --------------------------------------------------------
 
@@ -85,6 +79,7 @@ CREATE TABLE `tbl_pengguna` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `alamat` text DEFAULT NULL,
+  `ongkir` int(10) NOT NULL,
   `no_telepon` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -92,10 +87,11 @@ CREATE TABLE `tbl_pengguna` (
 -- Dumping data untuk tabel `tbl_pengguna`
 --
 
-INSERT INTO `tbl_pengguna` (`id_pengguna`, `nama_pengguna`, `email`, `password`, `alamat`, `no_telepon`) VALUES
-(4, 'sari1', 'sari@gmail.com', '$2y$10$Fqd0jt2NY.ypweygb7PJp..IYQLLqJYszDa79lmdvRQpKtUbnNvFK', 'Batuphat', '1234567890'),
-(8, 'sari', 'sari1@gmail.com', '$2y$10$Ng/AzwgSRBGHCbC6vfxIKOH2QK.QouaavWi1k1ZaiWK3MB6dR4unO', 'Cunda', '082164331277'),
-(9, 'budi', 'budiman1@gmail.com', '$2y$10$VQBcHfrkHZZwJUXUQNoqf.elOv2t7A86C6GLy7iI.6H7tABVVe0li', 'Simpang Len', '082165443677');
+INSERT INTO `tbl_pengguna` (`id_pengguna`, `nama_pengguna`, `email`, `password`, `alamat`, `ongkir`, `no_telepon`) VALUES
+(4, 'sari1', 'sari@gmail.com', '$2y$10$Fqd0jt2NY.ypweygb7PJp..IYQLLqJYszDa79lmdvRQpKtUbnNvFK', 'Batuphat', 0, '1234567890'),
+(8, 'sari', 'sari1@gmail.com', '$2y$10$Ng/AzwgSRBGHCbC6vfxIKOH2QK.QouaavWi1k1ZaiWK3MB6dR4unO', 'Cunda', 0, '082164331277'),
+(9, 'budi', 'budiman1@gmail.com', '$2y$10$VQBcHfrkHZZwJUXUQNoqf.elOv2t7A86C6GLy7iI.6H7tABVVe0li', 'Simpang Len', 0, '082165443677'),
+(10, 'tia', 'tia@gmail.com', '$2y$10$ZxZwscHuKcsrpTO7rOaqvOF0B4H3hPDBsFq2NRlaR8Tq1YLQKb4JO', 'Cunda', 10000, '082165443677');
 
 -- --------------------------------------------------------
 
@@ -118,7 +114,8 @@ CREATE TABLE `tbl_produk` (
 
 INSERT INTO `tbl_produk` (`id_produk`, `nama_produk`, `gambar_produk`, `harga_produk`, `deskripsi_produk`, `stok_produk`) VALUES
 (10, 'Jus Mangga', 'uploads/—Pngtree—mango mango juice_7199742.png', 10000, 'Jus Mangga Segar', 10),
-(11, 'Jus Jeruk', 'uploads/pngwing.com (3).png', 10000, 'Jus Jeruk Segar', 10);
+(11, 'Jus Jeruk', 'uploads/pngwing.com (3).png', 10000, 'Jus Jeruk Segar', 10),
+(12, 'Day Cream1', 'uploads/ECOMMERCE.png', 10, 'abc', 10);
 
 --
 -- Indexes for dumped tables
@@ -166,19 +163,19 @@ ALTER TABLE `tbl_admin`
 -- AUTO_INCREMENT untuk tabel `tbl_pembelian`
 --
 ALTER TABLE `tbl_pembelian`
-  MODIFY `id_pembelian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_pembelian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_pengguna`
 --
 ALTER TABLE `tbl_pengguna`
-  MODIFY `id_pengguna` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_pengguna` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_produk`
 --
 ALTER TABLE `tbl_produk`
-  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)

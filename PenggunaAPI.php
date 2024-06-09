@@ -37,8 +37,9 @@ switch ($method) {
                 $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
                 $alamat = $_POST['alamat'];
                 $no_telepon = $_POST['no_telepon'];
+                $ongkir = $_POST['ongkir'];
 
-                $sql = "INSERT INTO tbl_pengguna (nama_pengguna, email, password, alamat, no_telepon) VALUES ('$nama_pengguna', '$email', '$password', '$alamat', '$no_telepon')";
+                $sql = "INSERT INTO tbl_pengguna (nama_pengguna, email, password, alamat, no_telepon, ongkir) VALUES ('$nama_pengguna', '$email', '$password', '$alamat', '$no_telepon', '$ongkir')";
 
                 if ($conn->query($sql) === TRUE) {
                     $response = array('status' => 'success', 'id_pengguna' => $conn->insert_id);
@@ -72,8 +73,9 @@ switch ($method) {
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $alamat = $_POST['alamat'];
             $no_telepon = $_POST['no_telepon'];
+            $ongkir = $_POST['ongkir'];
 
-            $sql = "INSERT INTO tbl_pengguna (nama_pengguna, email, password, alamat, no_telepon) VALUES ('$nama_pengguna', '$email', '$password', '$alamat', '$no_telepon')";
+            $sql = "INSERT INTO tbl_pengguna (nama_pengguna, email, password, alamat, no_telepon, ongkir) VALUES ('$nama_pengguna', '$email', '$password', '$alamat', '$no_telepon', '$ongkir')";
 
             if ($conn->query($sql) === TRUE) {
                 $response = array('status' => 'success', 'id_pengguna' => $conn->insert_id);
@@ -92,8 +94,9 @@ switch ($method) {
         $email = $_PUT['email'];
         $alamat = $_PUT['alamat'];
         $no_telepon = $_PUT['no_telepon'];
+        $ongkir = $_PUT['ongkir'];
 
-        $sql = "UPDATE tbl_pengguna SET nama_pengguna='$nama_pengguna', email='$email', alamat='$alamat', no_telepon='$no_telepon' WHERE id_pengguna=$id_pengguna";
+        $sql = "UPDATE tbl_pengguna SET nama_pengguna='$nama_pengguna', email='$email', alamat='$alamat', no_telepon='$no_telepon', ongkir='$ongkir' WHERE id_pengguna=$id_pengguna";
 
         if ($conn->query($sql) === TRUE) {
             $response = array('status' => 'success');
