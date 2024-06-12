@@ -81,11 +81,12 @@ switch ($method) {
 
         case 'PUT':
             $data = json_decode(file_get_contents('php://input'), true);
-            if (isset($data['id_pembelian']) && isset($data['status_pembelian'])) {
+            if (isset($data['id_pembelian']) && isset($data['status_pembelian']) && isset($data['status_pembayaran'])) {
                 $id_pembelian = intval($data['id_pembelian']);
                 $status_pembelian = $conn->real_escape_string($data['status_pembelian']);
+                $status_pembayaran = $conn->real_escape_string($data['status_pembayaran']);
     
-                $sql = "UPDATE tbl_pembelian SET status_pembelian='$status_pembelian' WHERE id_pembelian=$id_pembelian";
+                $sql = "UPDATE tbl_pembelian SET status_pembelian='$status_pembelian', status_pembayaran='$status_pembayaran' WHERE id_pembelian=$id_pembelian";
                 if ($conn->query($sql) === TRUE) {
                     echo json_encode(array('status' => 'success', 'message' => 'Pembelian berhasil diperbarui'));
                 } else {
