@@ -79,30 +79,26 @@ switch ($method) {
         }
         break;
 
-    case 'PUT':
-        $data = json_decode(file_get_contents('php://input'), true);
-        // Debug log untuk memeriksa data yang diterima
-        error_log("Data received: " . json_encode($data));
-        if (isset($data['id_pembelian']) && isset($data['status_pembelian']) && isset($data['status_pembayaran']) && isset($data['total_harga'])) {
-            $id_pembelian = intval($data['id_pembelian']);
-            $status_pembelian = $conn->real_escape_string($data['status_pembelian']);
-            $status_pembayaran = $conn->real_escape_string($data['status_pembayaran']);
-            $total_harga = $conn->real_escape_string($data['total_harga']);
-            
-            // Debug log untuk input yang diterima
-            error_log("Updating status_pembelian: id_pembelian = $id_pembelian, status_pembelian = $status_pembelian, status_pembayaran = $status_pembayaran, total_harga = $total_harga");
-            
-            $sql = "UPDATE tbl_pembelian SET status_pembelian='$status_pembelian', status_pembayaran='$status_pembayaran', total_harga='$total_harga' WHERE id_pembelian=$id_pembelian";
-            if ($conn->query($sql) === TRUE) {
-                echo json_encode(array('status' => 'success', 'message' => 'Pembelian berhasil diperbarui'));
+        case 'PUT':
+            $data = json_decode(file_get_contents('php://input'), true);
+            if (isset($data['id_pembelian']) && isset($data['status_pembelian'])) {
+                $id_pembelian = intval($data['id_pembelian']);
+                $status_pembelian = $conn->real_escape_string($data['status_pembelian']);
+    
+                $sql = "UPDATE tbl_pembelian SET status_pembelian='$status_pembelian' WHERE id_pembelian=$id_pembelian";
+                if ($conn->query($sql) === TRUE) {
+                    echo json_encode(array('status' => 'success', 'message' => 'Pembelian berhasil diperbarui'));
+                } else {
+                    error_log("Error updating pembelian: " . $conn->error);
+                    echo json_encode(array('status' => 'error', 'message' => 'Gagal memperbarui pembelian'));
+                }
             } else {
-                error_log("Error updating pembelian: " . $conn->error);
-                echo json_encode(array('status' => 'error', 'message' => 'Gagal memperbarui pembelian'));
+                echo json_encode(array('status' => 'error', 'message' => 'Data tidak lengkap'));
             }
-        } else {
-            echo json_encode(array('status' => 'error', 'message' => 'Data tidak lengkap'));
-        }
-        break;
+            break;
+    
+    
+        
 
     case 'DELETE':
         if (isset($_GET['id'])) {
